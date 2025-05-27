@@ -26,10 +26,33 @@ export default tseslint.config(
   },
   {
     rules: {
+      'no-empty-function': 'off',
+      'no-empty-pattern': 'off',
+      'prettier/prettier': [
+        'error',
+        {
+          singleQuote: true,
+          useTabs: false,
+          semi: true,
+          trailingComma: 'all',
+          bracketSpacing: true,
+          printWidth: 90,
+          endOfLine: 'auto',
+        },
+      ],
+      'react-hooks/exhaustive-deps': 'off',
+      '@typescript-eslint/no-empty-function': ['off'],
+      '@typescript-eslint/interface-name-prefix': 'off',
+      '@typescript-eslint/explicit-function-return-type': 'off',
+      '@typescript-eslint/explicit-module-boundary-types': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-floating-promises': 'warn',
-      '@typescript-eslint/no-unsafe-argument': 'warn',
-      'prettier/prettier': ['error', { endOfLine: 'auto' }],
+      '@typescript-eslint/no-namespace': 'off',
+      '@typescript-eslint/ban-ts-comment': 'off',
+      '@typescript-eslint/no-empty-interface': 'off',
+      '@typescript-eslint/ban-types': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
+      '@typescript-eslint/no-floating-promises': 'off',
+      '@typescript-eslint/no-unsafe-assignment': 'off',
     },
-  }
+  },
 );
