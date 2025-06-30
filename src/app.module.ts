@@ -1,15 +1,22 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { TaskModule } from './task/task.module';
 import { MongooseModule } from '@nestjs/mongoose';
+import { UsersModule } from './users/users.module';
+import { getMongoConfig } from './configs/mongo.config';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost:27017/pyd'),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: getMongoConfig,
+    }),
     ConfigModule.forRoot(),
     AuthModule,
     TaskModule,
+    UsersModule,
   ],
   controllers: [],
   providers: [],
