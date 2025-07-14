@@ -1,9 +1,15 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { UsersService } from 'src/users/users.service';
 import * as bcrypt from 'bcrypt';
 import { User } from 'src/users/users.model';
+import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
@@ -11,7 +17,11 @@ export class AuthService {
     private userService: UsersService,
     private jwtService: JwtService,
   ) {}
-  async login(dto: any) {}
+
+  async login(dto: LoginDto) {
+    const user = await this.validateUser(dto);
+    return this.getLoggedInUser(user);
+  }
 
   async signup(dto: CreateUserDto) {
     let candidate = await this.userService.getUserByUsername(dto.userName);
@@ -30,20 +40,14 @@ export class AuthService {
     }
 
     const hashPassword = await bcrypt.hash(dto.password, 5);
-    const created = await this.userService.createUser({
-      ...dto,
-      password: hashPassword,
-    });
+    const createdUser = await this.userService
+      .createUser({
+        ...dto,
+        password: hashPassword,
+      })
+      .then((u) => u?.get({ plain: true }));
 
-    const createdUser = created.get({ plain: true });
-    const loginInfo = await this.generateToken(createdUser);
-
-    const user = {
-      id: createdUser.id,
-      userName: createdUser.userName,
-      email: createdUser.email,
-      loginInfo,
-    };
+    const user = await this.getLoggedInUser(createdUser);
     return user;
   }
 
@@ -52,5 +56,28 @@ export class AuthService {
     return {
       token: this.jwtService.sign(payload),
     };
+  }
+
+  async getLoggedInUser(u: User) {
+    const loginInfo = await this.generateToken(u);
+
+    return {
+      id: u.id,
+      userName: u.userName,
+      email: u.email,
+      loginInfo,
+    };
+  }
+
+  async validateUser(dto: LoginDto) {
+    const candidate = await this.userService
+      .getUserByUsername(dto.userName)
+      .then((u) => u?.get({ plain: true }));
+
+    const paswordMatch = await bcrypt.compare(dto.password, candidate?.password ?? '');
+    if (!candidate || !paswordMatch) {
+      throw new UnauthorizedException({ message: 'Invalid credentials' });
+    }
+    return candidate;
   }
 }

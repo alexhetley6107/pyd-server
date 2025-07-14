@@ -9,14 +9,14 @@ export interface UserCreationAttrs {
 
 @Table({ tableName: 'users' })
 export class User extends Model<User, UserCreationAttrs> {
-  // @ApiProperty({ example: '1', description: 'User id' })
-  // @Column({
-  //   type: DataType.INTEGER,
-  //   unique: true,
-  //   autoIncrement: true,
-  //   primaryKey: true,
-  // })
-  // declare id: number;
+  @ApiProperty({ example: '1', description: 'User id' })
+  @Column({
+    type: DataType.INTEGER,
+    unique: true,
+    autoIncrement: true,
+    primaryKey: true,
+  })
+  declare id: number;
 
   @ApiProperty({ example: 'test@email.com', description: 'User email' })
   @Column({ type: DataType.STRING, unique: true, allowNull: false })

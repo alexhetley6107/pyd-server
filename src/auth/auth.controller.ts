@@ -16,10 +16,10 @@ export class AuthController {
     return this.authService.signup(dto);
   }
 
-  @ApiOperation({ summary: 'User Registration' })
+  @ApiOperation({ summary: 'User Authorization' })
   @ApiResponse({ status: 200, type: User })
   @Post('login')
   async login(@Body() dto: LoginDto) {
-    // return this.usersService.createUser(dto);
+    return this.authService.login(dto);
   }
 }
