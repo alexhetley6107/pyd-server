@@ -7,8 +7,7 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
 
   const config = new DocumentBuilder()
-    .setTitle('Auth API')
-    .setDescription('JWT Auth Example')
+    .setTitle('PYD Server')
     .setVersion('1.0')
     .addBearerAuth()
     .build();

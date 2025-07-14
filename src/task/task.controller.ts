@@ -1,7 +1,9 @@
 import { Body, Controller, Delete, HttpCode, Param, Patch, Post } from '@nestjs/common';
 import { TaskModel } from './task.model';
 import { FindTaskDto } from './dto/find-task.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Tasks')
 @Controller('task')
 export class TaskController {
   //
