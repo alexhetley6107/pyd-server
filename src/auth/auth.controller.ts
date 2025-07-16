@@ -22,4 +22,11 @@ export class AuthController {
   async login(@Body() dto: LoginDto) {
     return this.authService.login(dto);
   }
+
+  @ApiOperation({ summary: 'User Forgot password' })
+  @ApiResponse({ status: 200, type: User })
+  @Post('forgot-password')
+  async forgotPassword(@Body() dto: { email: string }) {
+    return this.authService.forgotPassword(dto.email);
+  }
 }

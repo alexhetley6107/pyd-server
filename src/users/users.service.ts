@@ -11,12 +11,12 @@ export class UsersService {
     return user;
   }
 
-  async getUserByEmail(email: string) {
+  async findByEmail(email: string) {
     const user = await this.userRepository.findOne({ where: { email } });
     return user;
   }
 
-  async getUserByUsername(userName: string) {
+  async findByUsername(userName: string) {
     const user = await this.userRepository.findOne({ where: { userName } });
     return user;
   }

@@ -24,14 +24,14 @@ export class AuthService {
   }
 
   async signup(dto: CreateUserDto) {
-    let candidate = await this.userService.getUserByUsername(dto.userName);
+    let candidate = await this.userService.findByUsername(dto.userName);
     if (candidate) {
       throw new HttpException(
         'User with this username already exists',
         HttpStatus.BAD_REQUEST,
       );
     }
-    candidate = await this.userService.getUserByEmail(dto.email);
+    candidate = await this.userService.findByEmail(dto.email);
     if (candidate) {
       throw new HttpException(
         'User with this email already exists',
@@ -71,7 +71,7 @@ export class AuthService {
 
   async validateUser(dto: LoginDto) {
     const candidate = await this.userService
-      .getUserByUsername(dto.userName)
+      .findByUsername(dto.userName)
       .then((u) => u?.get({ plain: true }));
 
     const paswordMatch = await bcrypt.compare(dto.password, candidate?.password ?? '');
@@ -79,5 +79,12 @@ export class AuthService {
       throw new UnauthorizedException({ message: 'Invalid credentials' });
     }
     return candidate;
+  }
+
+  async forgotPassword(email: string) {
+    const user = await this.userService.findByEmail(email);
+    if (!user) {
+      throw new HttpException('Such email not found', HttpStatus.BAD_REQUEST);
+    }
   }
 }
