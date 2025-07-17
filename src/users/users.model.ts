@@ -29,4 +29,10 @@ export class User extends Model<User, UserCreationAttrs> {
   @ApiProperty({ example: 'Test123!', description: 'User password' })
   @Column({ type: DataType.STRING, allowNull: false })
   password: string;
+
+  @Column({ type: DataType.STRING, allowNull: true })
+  resetToken: string;
+
+  @Column({ type: DataType.DATE, allowNull: true })
+  resetTokenExpiry: Date;
 }

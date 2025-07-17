@@ -4,6 +4,7 @@ import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { User } from 'src/users/users.model';
 import { LoginDto } from './dto/login.dto';
 import { AuthService } from './auth.service';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -24,9 +25,9 @@ export class AuthController {
   }
 
   @ApiOperation({ summary: 'User Forgot password' })
-  @ApiResponse({ status: 200, type: User })
+  @ApiResponse({ status: 200 })
   @Post('forgot-password')
-  async forgotPassword(@Body() dto: { email: string }) {
+  async forgotPassword(@Body() dto: ForgotPasswordDto) {
     return this.authService.forgotPassword(dto.email);
   }
 }

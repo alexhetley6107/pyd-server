@@ -10,12 +10,14 @@ import { UsersService } from 'src/users/users.service';
 import * as bcrypt from 'bcrypt';
 import { User } from 'src/users/users.model';
 import { LoginDto } from './dto/login.dto';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UsersService,
     private jwtService: JwtService,
+    private mailService: MailService,
   ) {}
 
   async login(dto: LoginDto) {
@@ -86,5 +88,13 @@ export class AuthService {
     if (!user) {
       throw new HttpException('Such email not found', HttpStatus.BAD_REQUEST);
     }
+
+    const token = this.jwtService.sign({ userId: user.id }, { expiresIn: '1h' });
+    user.resetToken = token;
+
+    user.resetTokenExpiry = new Date(Date.now() + 60 * 60 * 1000);
+    await user.save();
+
+    await this.mailService.sendResetPassword(email, token);
   }
 }
