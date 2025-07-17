@@ -31,8 +31,8 @@ export class User extends Model<User, UserCreationAttrs> {
   password: string;
 
   @Column({ type: DataType.STRING, allowNull: true })
-  resetToken: string;
+  resetToken: string | null;
 
   @Column({ type: DataType.DATE, allowNull: true })
-  resetTokenExpiry: Date;
+  resetTokenExpiry: Date | null;
 }

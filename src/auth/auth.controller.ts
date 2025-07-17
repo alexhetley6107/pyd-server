@@ -5,6 +5,7 @@ import { User } from 'src/users/users.model';
 import { LoginDto } from './dto/login.dto';
 import { AuthService } from './auth.service';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -29,5 +30,13 @@ export class AuthController {
   @Post('forgot-password')
   async forgotPassword(@Body() dto: ForgotPasswordDto) {
     return this.authService.forgotPassword(dto.email);
+  }
+
+  @ApiOperation({ summary: 'User Reset password' })
+  @ApiResponse({ status: 200 })
+  @Post('reset-password')
+  async resetPassword(@Body() dto: ResetPasswordDto) {
+    const { token, newPassword } = dto;
+    return this.authService.resetPassword(token, newPassword);
   }
 }

@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   HttpException,
   HttpStatus,
   Injectable,
@@ -42,12 +43,10 @@ export class AuthService {
     }
 
     const hashPassword = await bcrypt.hash(dto.password, 5);
-    const createdUser = await this.userService
-      .createUser({
-        ...dto,
-        password: hashPassword,
-      })
-      .then((u) => u?.get({ plain: true }));
+    const createdUser = await this.userService.createUser({
+      ...dto,
+      password: hashPassword,
+    });
 
     const user = await this.getLoggedInUser(createdUser);
     return user;
@@ -72,9 +71,7 @@ export class AuthService {
   }
 
   async validateUser(dto: LoginDto) {
-    const candidate = await this.userService
-      .findByUsername(dto.userName)
-      .then((u) => u?.get({ plain: true }));
+    const candidate = await this.userService.findByUsername(dto.userName);
 
     const paswordMatch = await bcrypt.compare(dto.password, candidate?.password ?? '');
     if (!candidate || !paswordMatch) {
@@ -85,16 +82,44 @@ export class AuthService {
 
   async forgotPassword(email: string) {
     const user = await this.userService.findByEmail(email);
+
     if (!user) {
       throw new HttpException('Such email not found', HttpStatus.BAD_REQUEST);
     }
 
     const token = this.jwtService.sign({ userId: user.id }, { expiresIn: '1h' });
-    user.resetToken = token;
 
-    user.resetTokenExpiry = new Date(Date.now() + 60 * 60 * 1000);
-    await user.save();
+    await this.userService.updateUser(user.id, {
+      resetToken: token,
+      resetTokenExpiry: new Date(Date.now() + 60 * 60 * 1000),
+    });
 
     await this.mailService.sendResetPassword(email, token);
+  }
+
+  async resetPassword(token: string, newPassword: string): Promise<{ message: string }> {
+    if (!token) {
+      throw new BadRequestException('Token is required');
+    }
+
+    const user = await this.userService.findByResetToken(token);
+
+    if (!user) {
+      throw new BadRequestException('Invalid or expired token');
+    }
+
+    if (user.resetTokenExpiry && user.resetTokenExpiry < new Date()) {
+      throw new BadRequestException('Token expired');
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await this.userService.updateUser(user.id, {
+      password: hashedPassword,
+      resetToken: null,
+      resetTokenExpiry: null,
+    });
+
+    return { message: 'Password has been reset successfully' };
   }
 }
