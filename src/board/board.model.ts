@@ -1,9 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Model, Table, Column, DataType } from 'sequelize-typescript';
-import { CreateBoardDto } from './dto/create-user.dto';
+import { Model, Table, Column, DataType, HasMany } from 'sequelize-typescript';
+import { CreateBoardDto } from './dto/create-board.dto';
+import { BoardColumn } from 'src/column/column.model';
 
 @Table({ tableName: 'boards' })
-export class User extends Model<User, CreateBoardDto> {
+export class Board extends Model<Board, CreateBoardDto> {
   @ApiProperty({
     example: 'e8b5a51c-cf3b-4a43-9d57-d1d6aeb3cdd3',
     description: 'Board ID (UUID)',
@@ -18,4 +19,7 @@ export class User extends Model<User, CreateBoardDto> {
   @ApiProperty({ example: 'Green Project', description: 'Name of your project board' })
   @Column({ type: DataType.STRING, unique: false, allowNull: false })
   name: string;
+
+  @HasMany(() => BoardColumn)
+  columns: BoardColumn[];
 }

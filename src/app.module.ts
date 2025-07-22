@@ -6,6 +6,7 @@ import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './auth/auth.module';
 import { MailModule } from './mail/mail.module';
 import { BoardModule } from './board/board.module';
+import { ColumnModule } from './column/column.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { BoardModule } from './board/board.module';
     AuthModule,
     MailModule,
     BoardModule,
+    ColumnModule,
   ],
   controllers: [],
 })

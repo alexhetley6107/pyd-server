@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Model, Table, Column, DataType } from 'sequelize-typescript';
+import { Model, Table, Column, DataType, HasMany } from 'sequelize-typescript';
 import { CreateUserDto } from './dto/create-user.dto';
+import { Task } from 'src/task/task.model';
+import { Board } from 'src/board/board.model';
 
 @Table({ tableName: 'users' })
 export class User extends Model<User, CreateUserDto> {
@@ -32,4 +34,10 @@ export class User extends Model<User, CreateUserDto> {
 
   @Column({ type: DataType.DATE, allowNull: true })
   resetTokenExpiry: Date | null;
+
+  @HasMany(() => Board)
+  boards: Board[];
+
+  @HasMany(() => Task)
+  tasks: Task[];
 }
