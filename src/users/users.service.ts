@@ -26,7 +26,7 @@ export class UsersService {
     return user?.get({ plain: true });
   }
 
-  async updateUser(id: number, attrs: Partial<User>): Promise<void> {
+  async updateUser(id: string, attrs: Partial<User>): Promise<void> {
     await this.userRepository.update(attrs, { where: { id } });
   }
 }

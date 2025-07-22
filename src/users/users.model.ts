@@ -1,22 +1,19 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Model, Table, Column, DataType } from 'sequelize-typescript';
-
-export interface UserCreationAttrs {
-  email: string;
-  userName: string;
-  password: string;
-}
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Table({ tableName: 'users' })
-export class User extends Model<User, UserCreationAttrs> {
-  @ApiProperty({ example: '1', description: 'User id' })
+export class User extends Model<User, CreateUserDto> {
+  @ApiProperty({
+    example: 'e8b5a51c-cf3b-4a43-9d57-d1d6aeb3cdd3',
+    description: 'User ID (UUID)',
+  })
   @Column({
-    type: DataType.INTEGER,
-    unique: true,
-    autoIncrement: true,
+    type: DataType.UUID,
+    defaultValue: DataType.UUIDV4,
     primaryKey: true,
   })
-  declare id: number;
+  declare id: string;
 
   @ApiProperty({ example: 'test@email.com', description: 'User email' })
   @Column({ type: DataType.STRING, unique: true, allowNull: false })
