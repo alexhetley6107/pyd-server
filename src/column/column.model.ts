@@ -1,6 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Model, Table, Column, DataType } from 'sequelize-typescript';
+import {
+  Model,
+  Table,
+  Column,
+  DataType,
+  ForeignKey,
+  BelongsTo,
+  HasMany,
+} from 'sequelize-typescript';
 import { CreateColumnDto } from './dto/create-column.dto';
+import { Board } from 'src/board/board.model';
+import { Task } from 'src/task/task.model';
 
 @Table({ tableName: 'columns' })
 export class BoardColumn extends Model<BoardColumn, CreateColumnDto> {
@@ -18,4 +28,14 @@ export class BoardColumn extends Model<BoardColumn, CreateColumnDto> {
   @ApiProperty({ example: 'To Do', description: 'Name of the board column' })
   @Column({ type: DataType.STRING, unique: false, allowNull: false })
   name: string;
+
+  @ForeignKey(() => Board)
+  @Column({ type: DataType.UUID })
+  boardId: string;
+
+  @BelongsTo(() => Board)
+  board: Board;
+
+  @HasMany(() => Task)
+  tasks: Task[];
 }

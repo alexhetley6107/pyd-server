@@ -1,6 +1,7 @@
 import { Sequelize } from 'sequelize-typescript';
 import { Board } from 'src/board/board.model';
 import { BoardColumn } from 'src/column/column.model';
+import { Task } from 'src/task/task.model';
 import { User } from 'src/users/users.model';
 
 export const databaseProviders = [
@@ -16,7 +17,7 @@ export const databaseProviders = [
         database: process.env.POSTGRES_DB,
       });
 
-      sequelize.addModels([User, Board, BoardColumn]);
+      sequelize.addModels([User, Board, BoardColumn, Task]);
 
       await sequelize.sync();
       return sequelize;

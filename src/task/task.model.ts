@@ -9,6 +9,7 @@ import {
 } from 'sequelize-typescript';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { User } from 'src/users/users.model';
+import { BoardColumn } from 'src/column/column.model';
 
 @Table({ tableName: 'tasks' })
 export class Task extends Model<Task, CreateTaskDto> {
@@ -37,4 +38,11 @@ export class Task extends Model<Task, CreateTaskDto> {
 
   @BelongsTo(() => User)
   user: User;
+
+  @ForeignKey(() => BoardColumn)
+  @Column({ type: DataType.UUID, allowNull: true })
+  columnId: string | null;
+
+  @BelongsTo(() => BoardColumn)
+  column: BoardColumn | null;
 }
