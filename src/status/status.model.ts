@@ -30,7 +30,7 @@ export class Status extends Model<Status, CreateStatusDto> {
   name: string;
 
   @ApiProperty({ example: '1', description: 'Order number' })
-  @Column({ type: DataType.NUMBER, unique: true, allowNull: false })
+  @Column({ type: DataType.INTEGER, unique: true, allowNull: false })
   order: number;
 
   @ForeignKey(() => User)

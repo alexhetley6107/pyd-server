@@ -12,8 +12,10 @@ import { CreateBoardDto } from './dto/create-board.dto';
 import { User } from 'src/users/users.model';
 import { Task } from 'src/task/task.model';
 
+type CreateBoardAttrs = CreateBoardDto & { userId: string };
+
 @Table({ tableName: 'boards' })
-export class Board extends Model<Board, CreateBoardDto> {
+export class Board extends Model<Board, CreateBoardAttrs> {
   @ApiProperty({
     example: 'e8b5a51c-cf3b-4a43-9d57-d1d6aeb3cdd3',
     description: 'Board ID (UUID)',
