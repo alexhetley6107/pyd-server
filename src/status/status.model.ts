@@ -4,16 +4,16 @@ import {
   Table,
   Column,
   DataType,
+  HasMany,
   ForeignKey,
   BelongsTo,
-  HasMany,
 } from 'sequelize-typescript';
-import { CreateColumnDto } from './dto/create-column.dto';
-import { Board } from 'src/board/board.model';
+import { CreateStatusDto } from './dto/create-status.dto';
 import { Task } from 'src/task/task.model';
+import { User } from 'src/users/users.model';
 
-@Table({ tableName: 'columns' })
-export class BoardColumn extends Model<BoardColumn, CreateColumnDto> {
+@Table({ tableName: 'statuses' })
+export class Status extends Model<Status, CreateStatusDto> {
   @ApiProperty({
     example: 'e8b5a51c-cf3b-4a43-9d57-d1d6aeb3cdd3',
     description: 'Board Column ID (UUID)',
@@ -29,12 +29,16 @@ export class BoardColumn extends Model<BoardColumn, CreateColumnDto> {
   @Column({ type: DataType.STRING, unique: false, allowNull: false })
   name: string;
 
-  @ForeignKey(() => Board)
-  @Column({ type: DataType.UUID })
-  boardId: string;
+  @ApiProperty({ example: '1', description: 'Order number' })
+  @Column({ type: DataType.NUMBER, unique: true, allowNull: false })
+  order: number;
 
-  @BelongsTo(() => Board)
-  board: Board;
+  @ForeignKey(() => User)
+  @Column({ type: DataType.UUID })
+  userId: string;
+
+  @BelongsTo(() => User)
+  user: User;
 
   @HasMany(() => Task)
   tasks: Task[];

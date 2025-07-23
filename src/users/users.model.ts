@@ -3,6 +3,7 @@ import { Model, Table, Column, DataType, HasMany } from 'sequelize-typescript';
 import { CreateUserDto } from './dto/create-user.dto';
 import { Task } from 'src/task/task.model';
 import { Board } from 'src/board/board.model';
+import { Status } from 'src/status/status.model';
 
 @Table({ tableName: 'users' })
 export class User extends Model<User, CreateUserDto> {
@@ -37,6 +38,9 @@ export class User extends Model<User, CreateUserDto> {
 
   @HasMany(() => Board)
   boards: Board[];
+
+  @HasMany(() => Status)
+  statuses: Status[];
 
   @HasMany(() => Task)
   tasks: Task[];

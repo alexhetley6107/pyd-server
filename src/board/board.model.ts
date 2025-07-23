@@ -9,8 +9,8 @@ import {
   BelongsTo,
 } from 'sequelize-typescript';
 import { CreateBoardDto } from './dto/create-board.dto';
-import { BoardColumn } from 'src/column/column.model';
 import { User } from 'src/users/users.model';
+import { Task } from 'src/task/task.model';
 
 @Table({ tableName: 'boards' })
 export class Board extends Model<Board, CreateBoardDto> {
@@ -36,6 +36,6 @@ export class Board extends Model<Board, CreateBoardDto> {
   @BelongsTo(() => User)
   user: User;
 
-  @HasMany(() => BoardColumn)
-  columns: BoardColumn[];
+  @HasMany(() => Task)
+  tasks: Task[];
 }

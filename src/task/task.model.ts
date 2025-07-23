@@ -9,7 +9,8 @@ import {
 } from 'sequelize-typescript';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { User } from 'src/users/users.model';
-import { BoardColumn } from 'src/column/column.model';
+import { Status } from 'src/status/status.model';
+import { Board } from 'src/board/board.model';
 
 @Table({ tableName: 'tasks' })
 export class Task extends Model<Task, CreateTaskDto> {
@@ -32,6 +33,10 @@ export class Task extends Model<Task, CreateTaskDto> {
   @Column({ type: DataType.STRING, unique: false, allowNull: false })
   description: string;
 
+  @ApiProperty({ example: 'Important', description: 'Task priority' })
+  @Column({ type: DataType.STRING, unique: false, allowNull: false })
+  priority: string;
+
   @ForeignKey(() => User)
   @Column({ type: DataType.UUID })
   userId: string;
@@ -39,10 +44,17 @@ export class Task extends Model<Task, CreateTaskDto> {
   @BelongsTo(() => User)
   user: User;
 
-  @ForeignKey(() => BoardColumn)
+  @ForeignKey(() => Board)
+  @Column({ type: DataType.UUID, allowNull: true })
+  boardId: string | null;
+
+  @BelongsTo(() => Board)
+  board: Board | null;
+
+  @ForeignKey(() => Status)
   @Column({ type: DataType.UUID, allowNull: true })
   columnId: string | null;
 
-  @BelongsTo(() => BoardColumn)
-  column: BoardColumn | null;
+  @BelongsTo(() => Status)
+  column: Status | null;
 }
