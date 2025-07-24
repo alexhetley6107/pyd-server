@@ -15,6 +15,7 @@ import { Status } from './status.model';
 import { StatusService } from './status.service';
 import { CreateStatusDto } from './dto/create-status.dto';
 import { UpdateStatusDto } from './dto/update-status.dto';
+import { RequestWithUser } from 'src/auth/types/requestWithUser';
 
 @ApiBearerAuth('jwt')
 @UseGuards(JwtAuthGuard)
@@ -33,7 +34,7 @@ export class StatusController {
   @ApiOperation({ summary: 'Board Creation' })
   @ApiResponse({ status: 200, type: Status })
   @Post()
-  async create(@Body() dto: CreateStatusDto, @Req() req: any) {
+  async create(@Body() dto: CreateStatusDto, @Req() req: RequestWithUser) {
     const userId = req.user.id;
     return this.statusService.create(dto, userId);
   }
@@ -41,7 +42,7 @@ export class StatusController {
   @ApiOperation({ summary: 'Board Updating' })
   @ApiResponse({ status: 200, type: Status })
   @Patch()
-  async upadate(@Body() dto: UpdateStatusDto, @Req() req: any) {
+  async upadate(@Body() dto: UpdateStatusDto, @Req() req: RequestWithUser) {
     const userId = req.user.id;
     return this.statusService.changeOrder(userId, dto.id, dto.order);
   }
@@ -49,7 +50,7 @@ export class StatusController {
   @ApiOperation({ summary: 'Board Deleting' })
   @ApiResponse({ status: 200 })
   @Delete(':id')
-  async dalete(@Param('id') id: string, @Req() req: any) {
+  async dalete(@Param('id') id: string, @Req() req: RequestWithUser) {
     const userId = req.user.id;
     return this.statusService.delete(id, userId);
   }
