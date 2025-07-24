@@ -12,8 +12,10 @@ import { CreateStatusDto } from './dto/create-status.dto';
 import { Task } from 'src/task/task.model';
 import { User } from 'src/users/users.model';
 
+type CreateStatusAttrs = CreateStatusDto & { userId: string; order: number };
+
 @Table({ tableName: 'statuses' })
-export class Status extends Model<Status, CreateStatusDto> {
+export class Status extends Model<Status, CreateStatusAttrs> {
   @ApiProperty({
     example: 'e8b5a51c-cf3b-4a43-9d57-d1d6aeb3cdd3',
     description: 'Board Column ID (UUID)',
@@ -30,7 +32,7 @@ export class Status extends Model<Status, CreateStatusDto> {
   name: string;
 
   @ApiProperty({ example: '1', description: 'Order number' })
-  @Column({ type: DataType.INTEGER, unique: true, allowNull: false })
+  @Column({ type: DataType.INTEGER, unique: false, allowNull: false })
   order: number;
 
   @ForeignKey(() => User)

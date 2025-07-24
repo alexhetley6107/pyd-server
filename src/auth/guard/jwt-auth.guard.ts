@@ -11,11 +11,7 @@ export class JwtAuthGuard implements CanActivate {
   constructor(private jwtService: JwtService) {}
 
   canActivate(context: ExecutionContext): boolean {
-    console.log('JwtAuthGuard');
-
     const request = context.switchToHttp().getRequest();
-
-    console.log(request.headers);
 
     const authHeader = request.headers.authorization;
 

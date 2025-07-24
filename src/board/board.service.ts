@@ -14,7 +14,7 @@ export class BoardService {
   constructor(@Inject(BOARD_REPOSITORY) private boardModel: typeof Board) {}
 
   async create(dto: CreateBoardDto, userId: string) {
-    const existing = await this.findByName(dto.name);
+    const existing = await this.findByName(dto.name, userId);
     if (existing) {
       throw new HttpException('Such board already exists', HttpStatus.BAD_REQUEST);
     }
@@ -23,8 +23,8 @@ export class BoardService {
     return board?.get({ plain: true });
   }
 
-  async findByName(name: string) {
-    const board = await this.boardModel.findOne({ where: { name } });
+  async findByName(name: string, userId: string) {
+    const board = await this.boardModel.findOne({ where: { name, userId } });
     return board?.get({ plain: true });
   }
 
