@@ -23,7 +23,7 @@ export class StatusController {
   constructor(private statusService: StatusService) {}
 
   @ApiOperation({ summary: 'Get All User Board columns' })
-  @ApiResponse({ status: 200, type: Status })
+  @ApiResponse({ status: 200, type: [Status] })
   @Get()
   async getAll(@Req() req: any) {
     const userId = req.user.id;

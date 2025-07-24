@@ -23,7 +23,7 @@ export class BoardController {
   constructor(private boardService: BoardService) {}
 
   @ApiOperation({ summary: 'Get All User Boards' })
-  @ApiResponse({ status: 200, type: Board })
+  @ApiResponse({ status: 200, type: [Board] })
   @Get()
   async getAll(@Req() req: any) {
     const userId = req.user.id;
@@ -41,7 +41,7 @@ export class BoardController {
   @ApiOperation({ summary: 'Board Updating' })
   @ApiResponse({ status: 200, type: Board })
   @Patch()
-  async upadate(@Body() dto: UpdateBoardDto) {
+  async update(@Body() dto: UpdateBoardDto) {
     return this.boardService.update(dto.id, dto);
   }
 

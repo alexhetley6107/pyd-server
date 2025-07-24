@@ -13,10 +13,10 @@ import { StatusModule } from './status/status.module';
     ConfigModule.forRoot({
       envFilePath: `.${process.env.NODE_ENV}.env`,
     }),
-    TaskModule,
     UsersModule,
     DatabaseModule,
     AuthModule,
+    TaskModule,
     MailModule,
     BoardModule,
     StatusModule,
