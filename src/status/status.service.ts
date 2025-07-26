@@ -76,4 +76,15 @@ export class StatusService {
 
     return await this.getAll(userId);
   }
+
+  async createInitials(userId: string) {
+    const initials = ['TODO', 'BLOCKED', 'PREPARING', 'IN PROGRESS', 'DONE'];
+
+    await Promise.all(
+      initials.map((s, i) => {
+        const body = { userId, name: s, order: i + 1 };
+        this.statusModel.create(body);
+      }),
+    );
+  }
 }
