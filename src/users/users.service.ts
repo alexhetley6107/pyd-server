@@ -4,6 +4,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { USER_REPOSITORY } from './users.providers';
 import { StatusService } from 'src/status/status.service';
 import { BoardService } from 'src/board/board.service';
+import { TaskService } from 'src/task/task.service';
 
 @Injectable()
 export class UsersService {
@@ -11,6 +12,7 @@ export class UsersService {
     @Inject(USER_REPOSITORY) private userRepository: typeof User,
     private statusService: StatusService,
     private boardService: BoardService,
+    private taskService: TaskService,
   ) {}
 
   async create(dto: CreateUserDto) {
@@ -47,7 +49,10 @@ export class UsersService {
       throw new NotFoundException('User not found.');
     }
 
-    // TODO: delete user's boards, statuses and tasks
+    await this.statusService.deleteAll(id);
+    await this.boardService.deleteAll(id);
+    await this.taskService.deleteAll(id);
+
     await user.destroy();
   }
 }

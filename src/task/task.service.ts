@@ -50,4 +50,10 @@ export class TaskService {
     const task = await this.taskModel.findOne({ where: { id } });
     return task?.get({ plain: true });
   }
+
+  async deleteAll(userId: string) {
+    const tasks = await this.taskModel.findAll({ where: { userId } });
+
+    await Promise.all(tasks.map((t) => t.destroy()));
+  }
 }

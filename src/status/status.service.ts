@@ -87,4 +87,10 @@ export class StatusService {
       }),
     );
   }
+
+  async deleteAll(userId: string) {
+    const statuses = await this.statusModel.findAll({ where: { userId } });
+
+    await Promise.all(statuses.map((s) => s.destroy()));
+  }
 }

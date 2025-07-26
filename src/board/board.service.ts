@@ -47,4 +47,10 @@ export class BoardService {
     }
     await board.destroy();
   }
+
+  async deleteAll(userId: string) {
+    const boards = await this.boardModel.findAll({ where: { userId } });
+
+    await Promise.all(boards.map((b) => b.destroy()));
+  }
 }
