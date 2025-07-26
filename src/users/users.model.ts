@@ -22,9 +22,9 @@ export class User extends Model<User, CreateUserDto> {
   @Column({ type: DataType.STRING, unique: true, allowNull: false })
   email: string;
 
-  @ApiProperty({ example: 'John Doe', description: 'User name' })
+  @ApiProperty({ example: 'John Doe', description: 'User nickname' })
   @Column({ type: DataType.STRING, allowNull: false })
-  userName: string;
+  nickname: string;
 
   @ApiProperty({ example: 'Test123!', description: 'User password' })
   @Column({ type: DataType.STRING, allowNull: false })

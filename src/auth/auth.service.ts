@@ -27,7 +27,7 @@ export class AuthService {
   }
 
   async signup(dto: CreateUserDto) {
-    let candidate = await this.userService.findByUsername(dto.userName);
+    let candidate = await this.userService.findByNickname(dto.nickname);
     if (candidate) {
       throw new HttpException(
         'User with this username already exists',
@@ -43,7 +43,7 @@ export class AuthService {
     }
 
     const hashPassword = await bcrypt.hash(dto.password, 5);
-    const createdUser = await this.userService.createUser({
+    const createdUser = await this.userService.create({
       ...dto,
       password: hashPassword,
     });
@@ -53,7 +53,7 @@ export class AuthService {
   }
 
   async generateToken(user: User) {
-    const payload = { email: user.email, id: user.id, userName: user.userName };
+    const payload = { email: user.email, id: user.id, nickname: user.nickname };
     return {
       token: this.jwtService.sign(payload),
     };
@@ -64,14 +64,18 @@ export class AuthService {
 
     return {
       id: u.id,
-      userName: u.userName,
+      nickname: u.nickname,
       email: u.email,
       loginInfo,
     };
   }
 
   async validateUser(dto: LoginDto) {
-    const candidate = await this.userService.findByUsername(dto.userName);
+    let candidate = await this.userService.findByNickname(dto.login);
+
+    if (!candidate) {
+      candidate = await this.userService.findByEmail(dto.login);
+    }
 
     const paswordMatch = await bcrypt.compare(dto.password, candidate?.password ?? '');
     if (!candidate || !paswordMatch) {
@@ -89,7 +93,7 @@ export class AuthService {
 
     const token = this.jwtService.sign({ userId: user.id }, { expiresIn: '1h' });
 
-    await this.userService.updateUser(user.id, {
+    await this.userService.update(user.id, {
       resetToken: token,
       resetTokenExpiry: new Date(Date.now() + 60 * 60 * 1000),
     });
@@ -114,7 +118,7 @@ export class AuthService {
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-    await this.userService.updateUser(user.id, {
+    await this.userService.update(user.id, {
       password: hashedPassword,
       resetToken: null,
       resetTokenExpiry: null,

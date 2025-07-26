@@ -7,7 +7,7 @@ import { USER_REPOSITORY } from './users.providers';
 export class UsersService {
   constructor(@Inject(USER_REPOSITORY) private userRepository: typeof User) {}
 
-  async createUser(dto: CreateUserDto) {
+  async create(dto: CreateUserDto) {
     const user = await this.userRepository.create(dto);
     return user?.get({ plain: true });
   }
@@ -17,8 +17,8 @@ export class UsersService {
     return user?.get({ plain: true });
   }
 
-  async findByUsername(userName: string) {
-    const user = await this.userRepository.findOne({ where: { userName } });
+  async findByNickname(nickname: string) {
+    const user = await this.userRepository.findOne({ where: { nickname } });
     return user?.get({ plain: true });
   }
 
@@ -27,7 +27,11 @@ export class UsersService {
     return user?.get({ plain: true });
   }
 
-  async updateUser(id: string, attrs: Partial<User>): Promise<void> {
+  async update(id: string, attrs: Partial<User>): Promise<void> {
+    await this.userRepository.update(attrs, { where: { id } });
+  }
+
+  async delete(id: string, attrs: Partial<User>): Promise<void> {
     await this.userRepository.update(attrs, { where: { id } });
   }
 }
