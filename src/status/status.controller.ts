@@ -10,12 +10,12 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/jwt-app/guard/jwt-auth.guard';
 import { Status } from './status.model';
 import { StatusService } from './status.service';
 import { CreateStatusDto } from './dto/create-status.dto';
 import { UpdateStatusDto } from './dto/update-status.dto';
-import { RequestWithUser } from 'src/auth/types/requestWithUser';
+import { RequestWithUser } from 'src/jwt-app/types/requestWithUser';
 
 @ApiBearerAuth('jwt')
 @UseGuards(JwtAuthGuard)

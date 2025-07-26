@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { MailModule } from './mail/mail.module';
 import { BoardModule } from './board/board.module';
 import { StatusModule } from './status/status.module';
+import { JwtAppModule } from './jwt-app/jwt-app.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { StatusModule } from './status/status.module';
     MailModule,
     BoardModule,
     StatusModule,
+    JwtAppModule,
   ],
   controllers: [],
 })

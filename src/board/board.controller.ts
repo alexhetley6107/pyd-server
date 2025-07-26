@@ -12,10 +12,10 @@ import {
 import { CreateBoardDto } from './dto/create-board.dto';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Board } from './board.model';
-import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/jwt-app/guard/jwt-auth.guard';
 import { BoardService } from './board.service';
 import { UpdateBoardDto } from './dto/update-board.dto';
-import { RequestWithUser } from 'src/auth/types/requestWithUser';
+import { RequestWithUser } from 'src/jwt-app/types/requestWithUser';
 
 @ApiBearerAuth('jwt')
 @UseGuards(JwtAuthGuard)
