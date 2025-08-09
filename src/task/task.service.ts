@@ -13,6 +13,7 @@ export class TaskService {
   async getAll(userId: string, filters: TaskQueryDto) {
     const where: Record<string, unknown> = { userId };
 
+    if (filters.boardId) where.boardId = filters.boardId;
     if (filters.statusId) where.statusId = filters.statusId;
     if (filters.priority) where.priority = filters.priority;
     if (filters.search) {
