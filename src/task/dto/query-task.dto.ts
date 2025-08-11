@@ -2,10 +2,10 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class TaskQueryDto {
   @ApiPropertyOptional()
-  boardId?: string;
+  boardId?: string | null;
 
   @ApiPropertyOptional()
-  statusId?: string;
+  statusId?: string | null;
 
   @ApiPropertyOptional()
   priority?: string;
