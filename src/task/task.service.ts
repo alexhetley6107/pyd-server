@@ -19,7 +19,10 @@ export class TaskService {
     if (filters.statusId) where.statusId = filters.statusId;
     if (filters.priority) where.priority = filters.priority;
     if (filters.search) {
-      where.title = { [Op.iLike]: `%${filters.search}%` };
+      (where as any)[Op.or] = [
+        { title: { [Op.iLike]: `%${filters.search}%` } },
+        { description: { [Op.iLike]: `%${filters.search}%` } },
+      ];
     }
 
     const limit = filters.limit ? parseInt(filters.limit, 10) : 10;

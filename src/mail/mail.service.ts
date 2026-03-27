@@ -18,7 +18,7 @@ export class MailService {
 
   async sendMail(to: string, subject: string, html: string): Promise<void> {
     await this.transporter.sendMail({
-      from: `PYD Support <${process.env.NODE_MAILER_USER}>`,
+      from: `PYD Support`,
       to,
       subject,
       html,
