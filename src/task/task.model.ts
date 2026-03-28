@@ -9,7 +9,6 @@ import {
 } from 'sequelize-typescript';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { User } from 'src/users/users.model';
-import { Status } from 'src/status/status.model';
 import { Board } from 'src/board/board.model';
 
 type CreateBoardAttrs = CreateTaskDto & { userId: string };
@@ -57,10 +56,7 @@ export class Task extends Model<Task, CreateBoardAttrs> {
   @BelongsTo(() => Board)
   board: Board | null;
 
-  @ForeignKey(() => Status)
-  @Column({ type: DataType.UUID, allowNull: true })
-  statusId: string | null;
-
-  @BelongsTo(() => Status)
-  status: Status | null;
+  @ApiProperty({ example: 'in progress' })
+  @Column({ type: DataType.STRING, unique: false, allowNull: true })
+  status: string;
 }

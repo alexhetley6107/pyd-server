@@ -2,7 +2,6 @@ import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { User } from './users.model';
 import { CreateUserDto } from './dto/create-user.dto';
 import { USER_REPOSITORY } from './users.providers';
-import { StatusService } from 'src/status/status.service';
 import { BoardService } from 'src/board/board.service';
 import { TaskService } from 'src/task/task.service';
 
@@ -10,7 +9,6 @@ import { TaskService } from 'src/task/task.service';
 export class UsersService {
   constructor(
     @Inject(USER_REPOSITORY) private userRepository: typeof User,
-    private statusService: StatusService,
     private boardService: BoardService,
     private taskService: TaskService,
   ) {}
@@ -18,7 +16,6 @@ export class UsersService {
   async create(dto: CreateUserDto) {
     const userModel = await this.userRepository.create(dto);
     const user = userModel?.get({ plain: true });
-    await this.statusService.createInitials(user.id);
     await this.boardService.create({ name: 'First Project' }, user.id);
 
     return user;
@@ -49,7 +46,6 @@ export class UsersService {
       throw new NotFoundException('User not found.');
     }
 
-    await this.statusService.deleteAll(id);
     await this.boardService.deleteAll(id);
     await this.taskService.deleteAll(id);
 
