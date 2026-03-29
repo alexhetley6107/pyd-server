@@ -12,13 +12,13 @@ import {
 import { CreateBoardDto } from './dto/create-board.dto';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Board } from './board.model';
-import { JwtAuthGuard } from 'src/jwt-app/guard/jwt-auth.guard';
+import { JwtAccessGuard } from 'src/jwt-app/guard/jwt-access.guard';
 import { BoardService } from './board.service';
 import { UpdateBoardDto } from './dto/update-board.dto';
 import { RequestWithUser } from 'src/jwt-app/types/requestWithUser';
 
 @ApiBearerAuth('jwt')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAccessGuard)
 @Controller('board')
 export class BoardController {
   constructor(private boardService: BoardService) {}
@@ -49,7 +49,7 @@ export class BoardController {
   @ApiOperation({ summary: 'Board Deleting' })
   @ApiResponse({ status: 200 })
   @Delete(':id')
-  async dalete(@Param('id') id: string) {
+  async delete(@Param('id') id: string) {
     return this.boardService.delete(id);
   }
 }

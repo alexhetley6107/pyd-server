@@ -11,7 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/jwt-app/guard/jwt-auth.guard';
+import { JwtAccessGuard } from 'src/jwt-app/guard/jwt-access.guard';
 import { TaskService } from './task.service';
 import { Task } from './task.model';
 import { CreateTaskDto } from './dto/create-task.dto';
@@ -20,7 +20,7 @@ import { RequestWithUser } from 'src/jwt-app/types/requestWithUser';
 import { TaskQueryDto } from './dto/query-task.dto';
 
 @ApiBearerAuth('jwt')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAccessGuard)
 @Controller('task')
 export class TaskController {
   constructor(private taskService: TaskService) {}

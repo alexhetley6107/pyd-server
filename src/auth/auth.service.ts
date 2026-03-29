@@ -1,3 +1,4 @@
+import * as bcrypt from 'bcrypt';
 import {
   BadRequestException,
   HttpException,
@@ -8,10 +9,9 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { UsersService } from 'src/users/users.service';
-import * as bcrypt from 'bcrypt';
-import { User } from 'src/users/users.model';
 import { LoginDto } from './dto/login.dto';
 import { MailService } from 'src/mail/mail.service';
+import { Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -21,12 +21,48 @@ export class AuthService {
     private mailService: MailService,
   ) {}
 
-  async login(dto: LoginDto) {
-    const user = await this.validateUser(dto);
-    return this.getLoggedInUser(user);
+  generateTokens(id: string, email: string) {
+    const payload = { id, email };
+
+    const accessToken = this.jwtService.sign(payload, {
+      secret: process.env.JWT_ACCESS_SECRET,
+      expiresIn: '15m',
+    });
+
+    const refreshToken = this.jwtService.sign(payload, {
+      secret: process.env.JWT_REFRESH_SECRET,
+      expiresIn: '7d',
+    });
+
+    return { accessToken, refreshToken };
   }
 
-  async signup(dto: CreateUserDto) {
+  setTokenCookies(res: Response, accessToken: string, refreshToken: string) {
+    res.cookie('access_token', accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 15 * 60 * 1000,
+    });
+
+    res.cookie('refresh_token', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+  }
+
+  async login(res: Response, dto: LoginDto) {
+    const user = await this.validateUser(dto);
+
+    const { accessToken, refreshToken } = this.generateTokens(user.id, user.email);
+    this.setTokenCookies(res, accessToken, refreshToken);
+
+    return user;
+  }
+
+  async signup(res: Response, dto: CreateUserDto) {
     let candidate = await this.userService.findByNickname(dto.nickname);
     if (candidate) {
       throw new HttpException(
@@ -48,26 +84,27 @@ export class AuthService {
       password: hashPassword,
     });
 
-    const user = await this.getLoggedInUser(createdUser);
-    return user;
+    const { accessToken, refreshToken } = this.generateTokens(
+      createdUser.id,
+      createdUser.email,
+    );
+    this.setTokenCookies(res, accessToken, refreshToken);
+
+    return createdUser;
   }
 
-  async generateToken(user: User) {
-    const payload = { email: user.email, id: user.id, nickname: user.nickname };
-    return {
-      token: this.jwtService.sign(payload),
+  async refresh(res: Response, token: string) {
+    const payload = this.jwtService.decode(token) as {
+      id: string;
+      email: string;
     };
+    const { accessToken, refreshToken } = this.generateTokens(payload.id, payload.email);
+    this.setTokenCookies(res, accessToken, refreshToken);
   }
 
-  async getLoggedInUser(u: User) {
-    const loginInfo = await this.generateToken(u);
-
-    return {
-      id: u.id,
-      nickname: u.nickname,
-      email: u.email,
-      loginInfo,
-    };
+  logout(res: Response) {
+    res.clearCookie('access_token');
+    res.clearCookie('refresh_token');
   }
 
   async validateUser(dto: LoginDto) {
@@ -77,11 +114,29 @@ export class AuthService {
       candidate = await this.userService.findByEmail(dto.login);
     }
 
-    const paswordMatch = await bcrypt.compare(dto.password, candidate?.password ?? '');
-    if (!candidate || !paswordMatch) {
+    const passwordMatch = await bcrypt.compare(dto.password, candidate?.password ?? '');
+    if (!candidate || !passwordMatch) {
       throw new UnauthorizedException({ message: 'Invalid credentials' });
     }
-    return candidate;
+
+    const user = {
+      id: candidate.id,
+      email: candidate.email,
+      nickname: candidate.nickname,
+    };
+
+    return user;
+  }
+
+  async getMe(id: string) {
+    const user = await this.userService.findById(id);
+    if (!user) throw new UnauthorizedException('User not found');
+
+    return {
+      id: user.id,
+      email: user.email,
+      nickname: user.nickname,
+    };
   }
 
   async forgotPassword(email: string) {

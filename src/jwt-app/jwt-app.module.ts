@@ -1,18 +1,12 @@
 import { Global, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
-import { PassportModule } from '@nestjs/passport';
+import { JwtAccessGuard } from './guard/jwt-access.guard';
+import { JwtRefreshGuard } from './guard/jwt-refresh.guard';
 
 @Global()
 @Module({
-  imports: [
-    PassportModule.register({ defaultStrategy: 'jwt' }),
-    JwtModule.register({
-      secret: process.env.PRIVATE_KEY || 'SECRET',
-      signOptions: {
-        expiresIn: '2h',
-      },
-    }),
-  ],
-  exports: [JwtModule, PassportModule],
+  imports: [JwtModule.register({})],
+  exports: [JwtModule],
+  providers: [JwtAccessGuard, JwtRefreshGuard],
 })
 export class JwtAppModule {}
