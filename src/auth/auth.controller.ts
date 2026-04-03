@@ -10,6 +10,7 @@ import { Request, Response } from 'express';
 import { JwtRefreshGuard } from 'src/jwt-app/guard/jwt-refresh.guard';
 import { JwtAccessGuard } from 'src/jwt-app/guard/jwt-access.guard';
 import { RequestWithUser } from 'src/jwt-app/types/requestWithUser';
+import { JwtGetMeGuard } from 'src/jwt-app/guard/jwt-get-me.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -59,11 +60,12 @@ export class AuthController {
     return this.authService.resetPassword(token, newPassword);
   }
 
-  @UseGuards(JwtAccessGuard)
+  @UseGuards(JwtGetMeGuard)
   @ApiOperation({ summary: 'Get current user' })
   @ApiResponse({ status: 200 })
   @Get('me')
   async getMe(@Req() req: RequestWithUser) {
+    if (!req.user) return null;
     return this.authService.getMe(req.user.id);
   }
 }

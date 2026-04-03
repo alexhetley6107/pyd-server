@@ -28,7 +28,7 @@ export class TaskController {
   @ApiOperation({ summary: 'Get User Tasks' })
   @ApiResponse({ status: 200, type: [Task] })
   @ApiQuery({ name: 'boardId', required: false, type: String })
-  @ApiQuery({ name: 'statusId', required: false, type: String })
+  @ApiQuery({ name: 'status', required: false, type: String })
   @ApiQuery({ name: 'priority', required: false, type: String })
   @ApiQuery({ name: 'search', required: false, type: String })
   @Get()

@@ -16,7 +16,7 @@ export class TaskService {
     if (filters.boardId) {
       where.boardId = filters.boardId === 'null' ? null : filters.boardId;
     }
-    if (filters.statusId) where.statusId = filters.statusId;
+    if (filters.status) where.status = filters.status;
     if (filters.priority) where.priority = filters.priority;
     if (filters.search) {
       (where as any)[Op.or] = [

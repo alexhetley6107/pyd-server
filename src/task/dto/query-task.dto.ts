@@ -5,7 +5,7 @@ export class TaskQueryDto {
   boardId?: string | null;
 
   @ApiPropertyOptional()
-  statusId?: string | null;
+  status?: string | null;
 
   @ApiPropertyOptional()
   priority?: string;

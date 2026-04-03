@@ -24,7 +24,7 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);
-
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   app.use(cookieParser());
 
   app.enableCors({

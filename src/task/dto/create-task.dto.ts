@@ -20,8 +20,8 @@ export class CreateTaskDto {
   readonly boardId?: string;
 
   @ApiProperty({
-    example: '8c446d00-a6aa-4225-b836-afdb9586d551',
-    description: 'Task statuc column',
+    example: 'TO DO',
+    description: 'Task statuS column',
   })
-  readonly statusId?: string;
+  readonly status?: string;
 }

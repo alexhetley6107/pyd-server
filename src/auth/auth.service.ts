@@ -133,7 +133,6 @@ export class AuthService {
     if (!user) throw new UnauthorizedException('User not found');
 
     return {
-      id: user.id,
       email: user.email,
       nickname: user.nickname,
     };
