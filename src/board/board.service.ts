@@ -8,6 +8,8 @@ import {
 import { CreateBoardDto } from './dto/create-board.dto';
 import { Board } from './board.model';
 import { BOARD_REPOSITORY } from './board.providers';
+import { BoardQueryDto } from './dto/query-board.dto';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class BoardService {
@@ -28,8 +30,25 @@ export class BoardService {
     return board?.get({ plain: true });
   }
 
-  async getAll(userId: string) {
-    const boards = await this.boardModel.findAll({ where: { userId } });
+  async getAll(userId: string, filters: BoardQueryDto) {
+    const where: Record<string, unknown> = { userId };
+
+    if (filters.search) {
+      (where as any)[Op.or] = [
+        { name: { [Op.iLike]: `%${filters.search}%` } },
+        { description: { [Op.iLike]: `%${filters.search}%` } },
+      ];
+    }
+
+    const limit = filters.limit ? parseInt(filters.limit, 10) : 10;
+    const offset = filters.offset ? parseInt(filters.offset, 10) : 0;
+
+    const boards = await this.boardModel.findAll({
+      where,
+      limit,
+      offset,
+      order: [['updatedAt', 'DESC']],
+    });
     return boards?.map((b) => b?.get({ plain: true }));
   }
 

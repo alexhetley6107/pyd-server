@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -16,6 +17,7 @@ import { JwtAccessGuard } from 'src/jwt-app/guard/jwt-access.guard';
 import { BoardService } from './board.service';
 import { UpdateBoardDto } from './dto/update-board.dto';
 import { RequestWithUser } from 'src/jwt-app/types/requestWithUser';
+import { BoardQueryDto } from './dto/query-board.dto';
 
 @ApiBearerAuth('jwt')
 @UseGuards(JwtAccessGuard)
@@ -26,9 +28,9 @@ export class BoardController {
   @ApiOperation({ summary: 'Get All User Boards' })
   @ApiResponse({ status: 200, type: [Board] })
   @Get()
-  async getAll(@Req() req: RequestWithUser) {
+  async getAll(@Req() req: RequestWithUser, @Query() query: BoardQueryDto) {
     const userId = req.user.id;
-    return this.boardService.getAll(userId);
+    return this.boardService.getAll(userId, query);
   }
 
   @ApiOperation({ summary: 'Board Creation' })

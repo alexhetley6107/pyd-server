@@ -31,6 +31,13 @@ export class Board extends Model<Board, CreateBoardAttrs> {
   @Column({ type: DataType.STRING, unique: false, allowNull: false })
   name: string;
 
+  @ApiProperty({
+    example: 'Description Green Project',
+    description: 'Description of your project board',
+  })
+  @Column({ type: DataType.STRING, unique: false, allowNull: true })
+  description: string;
+
   @ForeignKey(() => User)
   @Column({ type: DataType.UUID })
   userId: string;
