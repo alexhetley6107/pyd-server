@@ -33,6 +33,13 @@ export class BoardController {
     return this.boardService.getAll(userId, query);
   }
 
+  @ApiOperation({ summary: 'Get Board by id' })
+  @ApiResponse({ status: 200, type: [Board] })
+  @Get(':id')
+  async getOne(@Req() req: RequestWithUser, @Param('id') id: string) {
+    return this.boardService.getOne(id);
+  }
+
   @ApiOperation({ summary: 'Board Creation' })
   @ApiResponse({ status: 200, type: Board })
   @Post()

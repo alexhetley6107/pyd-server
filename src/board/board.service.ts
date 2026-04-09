@@ -16,11 +16,6 @@ export class BoardService {
   constructor(@Inject(BOARD_REPOSITORY) private boardModel: typeof Board) {}
 
   async create(dto: CreateBoardDto, userId: string) {
-    const existing = await this.findByName(dto.name, userId);
-    if (existing) {
-      throw new HttpException('Such board already exists', HttpStatus.BAD_REQUEST);
-    }
-
     const board = await this.boardModel.create({ ...dto, userId });
     return board?.get({ plain: true });
   }
@@ -40,8 +35,8 @@ export class BoardService {
       ];
     }
 
-    const limit = filters.limit ? parseInt(filters.limit, 10) : 10;
-    const offset = filters.offset ? parseInt(filters.offset, 10) : 0;
+    const limit = filters.limit ? parseInt(filters.limit, 100) : 100;
+    const offset = filters.offset ? parseInt(filters.offset, 100) : 0;
 
     const boards = await this.boardModel.findAll({
       where,
@@ -50,6 +45,11 @@ export class BoardService {
       order: [['updatedAt', 'DESC']],
     });
     return boards?.map((b) => b?.get({ plain: true }));
+  }
+
+  async getOne(id: string) {
+    const board = await this.boardModel.findOne({ where: { id } });
+    return board?.get({ plain: true });
   }
 
   async update(id: string, attrs: Partial<Board>) {

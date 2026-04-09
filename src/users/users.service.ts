@@ -16,7 +16,6 @@ export class UsersService {
   async create(dto: CreateUserDto) {
     const userModel = await this.userRepository.create(dto);
     const user = userModel?.get({ plain: true });
-    await this.boardService.create({ name: 'First Project' }, user.id);
 
     return user;
   }
