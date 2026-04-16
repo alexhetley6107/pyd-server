@@ -60,7 +60,7 @@ export class AuthController {
     return this.authService.resetPassword(token, newPassword);
   }
 
-  @UseGuards(JwtGetMeGuard)
+  @UseGuards(JwtAccessGuard)
   @ApiOperation({ summary: 'Get current user' })
   @ApiResponse({ status: 200 })
   @Get('me')

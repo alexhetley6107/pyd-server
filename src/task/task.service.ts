@@ -16,6 +16,7 @@ export class TaskService {
     if (filters.boardId) {
       where.boardId = filters.boardId === 'null' ? null : filters.boardId;
     }
+    if (filters.id) where.id = filters.id;
     if (filters.status) where.status = filters.status;
     if (filters.priority) where.priority = filters.priority;
     if (filters.search) {
@@ -25,20 +26,31 @@ export class TaskService {
       ];
     }
 
-    const limit = filters.limit ? parseInt(filters.limit, 10) : 10;
-    const offset = filters.offset ? parseInt(filters.offset, 10) : 0;
+    // const limit = filters.limit ? parseInt(filters.limit, 10) : 10;
+    // const offset = filters.offset ? parseInt(filters.offset, 10) : 0;
 
     const tasks = await this.taskModel.findAll({
       where,
-      limit,
-      offset,
+      // limit,
+      // offset,
       order: [['updatedAt', 'DESC']],
     });
     return tasks?.map((b) => b?.get({ plain: true }));
   }
 
   async create(dto: CreateTaskDto, userId: string) {
-    const task = await this.taskModel.create({ ...dto, userId });
+    const statusColumnTasks = await this.taskModel.findAll({
+      where: {
+        boardId: dto.boardId,
+        status: dto.status,
+      },
+    });
+
+    const task = await this.taskModel.create({
+      ...dto,
+      userId,
+      order: statusColumnTasks.length + 1,
+    });
     return task?.get({ plain: true });
   }
 

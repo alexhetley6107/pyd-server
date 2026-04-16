@@ -11,10 +11,10 @@ import { CreateTaskDto } from './dto/create-task.dto';
 import { User } from 'src/users/users.model';
 import { Board } from 'src/board/board.model';
 
-type CreateBoardAttrs = CreateTaskDto & { userId: string };
+type CreateTaskAttrs = CreateTaskDto & { userId: string; order: number };
 
 @Table({ tableName: 'tasks' })
-export class Task extends Model<Task, CreateBoardAttrs> {
+export class Task extends Model<Task, CreateTaskAttrs> {
   @ApiProperty({
     example: 'e8b5a51c-cf3b-4a43-9d57-d1d6aeb3cdd3',
     description: 'Task ID (UUID)',
@@ -41,6 +41,10 @@ export class Task extends Model<Task, CreateBoardAttrs> {
   @ApiProperty({ example: 'Date', description: 'Task date' })
   @Column({ type: DataType.DATE, unique: false, allowNull: true })
   date: string;
+
+  @ApiProperty({ example: 'Order', description: 'Task order on the board column' })
+  @Column({ type: DataType.FLOAT, unique: false, allowNull: false })
+  order: number;
 
   @ForeignKey(() => User)
   @Column({ type: DataType.UUID })
