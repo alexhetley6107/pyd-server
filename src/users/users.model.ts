@@ -29,6 +29,10 @@ export class User extends Model<User, CreateUserDto> {
   @Column({ type: DataType.STRING, allowNull: false })
   password: string;
 
+  @ApiProperty({ example: 'url', description: 'User photo' })
+  @Column({ type: DataType.STRING, allowNull: true })
+  photo: string;
+
   @Column({ type: DataType.STRING, allowNull: true })
   resetToken: string | null;
 

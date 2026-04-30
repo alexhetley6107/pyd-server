@@ -12,6 +12,7 @@ import { UsersService } from 'src/users/users.service';
 import { LoginDto } from './dto/login.dto';
 import { MailService } from 'src/mail/mail.service';
 import { Response } from 'express';
+import { UserInfo } from 'src/users/dto/user-info';
 
 @Injectable()
 export class AuthService {
@@ -53,16 +54,20 @@ export class AuthService {
     });
   }
 
-  async login(res: Response, dto: LoginDto) {
+  async login(res: Response, dto: LoginDto): Promise<UserInfo> {
     const user = await this.validateUser(dto);
 
     const { accessToken, refreshToken } = this.generateTokens(user.id, user.email);
     this.setTokenCookies(res, accessToken, refreshToken);
 
-    return user;
+    return {
+      email: user.email,
+      nickname: user.nickname,
+      photo: user.photo,
+    };
   }
 
-  async signup(res: Response, dto: CreateUserDto) {
+  async signup(res: Response, dto: CreateUserDto): Promise<UserInfo> {
     let candidate = await this.userService.findByNickname(dto.nickname);
     if (candidate) {
       throw new HttpException(
@@ -90,7 +95,11 @@ export class AuthService {
     );
     this.setTokenCookies(res, accessToken, refreshToken);
 
-    return createdUser;
+    return {
+      email: createdUser.email,
+      nickname: createdUser.nickname,
+      photo: createdUser.photo,
+    };
   }
 
   async refresh(res: Response, token: string) {
@@ -123,18 +132,20 @@ export class AuthService {
       id: candidate.id,
       email: candidate.email,
       nickname: candidate.nickname,
+      photo: candidate.photo,
     };
 
     return user;
   }
 
-  async getMe(id: string) {
+  async getMe(id: string): Promise<UserInfo> {
     const user = await this.userService.findById(id);
     if (!user) throw new UnauthorizedException('User not found');
 
     return {
       email: user.email,
       nickname: user.nickname,
+      photo: user.photo,
     };
   }
 

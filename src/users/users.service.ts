@@ -4,6 +4,9 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { USER_REPOSITORY } from './users.providers';
 import { BoardService } from 'src/board/board.service';
 import { TaskService } from 'src/task/task.service';
+import { unlink } from 'fs/promises';
+import { join } from 'path';
+import { UserInfo } from './dto/user-info';
 
 @Injectable()
 export class UsersService {
@@ -54,5 +57,29 @@ export class UsersService {
     await this.taskService.deleteAll(id);
 
     await user.destroy();
+  }
+
+  async updatePhoto(id: string, filename: string): Promise<UserInfo> {
+    const user = await this.findById(id);
+    if (!user) {
+      throw new NotFoundException('User not found.');
+    }
+    if (user.photo) {
+      try {
+        await unlink(join(process.cwd(), 'images', user.photo));
+      } catch (e) {
+        console.log('Old photo not found');
+      }
+    }
+
+    const photo = join(process.cwd(), 'images', filename);
+
+    await this.update(id, { photo });
+
+    return {
+      email: user.email,
+      nickname: user.nickname,
+      photo,
+    };
   }
 }
