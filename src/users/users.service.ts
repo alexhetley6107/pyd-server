@@ -72,7 +72,7 @@ export class UsersService {
       }
     }
 
-    const photo = join(process.cwd(), 'images', filename);
+    const photo = `${process.env.BASE_URL}/images/${filename}`;
 
     await this.update(id, { photo });
 
